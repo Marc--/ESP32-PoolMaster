@@ -370,6 +370,13 @@ void TaskUpdateSuperVisor(void)
 
   UpdateinProgress=1;
   Local_Logs_Dispatch("File received. Update PoolMaster...");
+
+  if (MqttClient.connected()) {
+      Local_Logs_Dispatch("Disconnecting MQTT for stability...");
+      MqttClient.disconnect();
+      delay(200); 
+  }
+
   snprintf(local_sbuf,sizeof(local_sbuf),"Start upload. File size is: %d bytes",contentLength);
   Local_Logs_Dispatch(local_sbuf);
   strcpy(barBuf, local_sbuf);
@@ -387,12 +394,15 @@ void TaskUpdateSuperVisor(void)
   Update.begin(contentLength);
   Update.onProgress(onOTAProgress);
   while (_undownloadByte > 0) {
+    esp_task_wdt_reset(); 
     contentLength = stream.available();
     if(contentLength) {
 			int c = stream.readBytes(payload, ((contentLength > sizeof(payload)) ? sizeof(payload) : contentLength));
       Update.write(payload, c);
       _undownloadByte -= c;
-      delay(10);
+      delay(50);
+    } else {
+        delay(1);
     }
   }
   
@@ -432,6 +442,13 @@ void TaskUpdatePoolMaster(void)
   if(code == 200){
     UpdateinProgress=1;
     Local_Logs_Dispatch("File received. Update PoolMaster...");
+    
+    if (MqttClient.connected()) {
+      Local_Logs_Dispatch("Disconnecting MQTT for Serial stability...");
+      MqttClient.disconnect();
+      delay(200);
+    }
+
     bool result;
     snprintf(local_sbuf,sizeof(local_sbuf),"Start upload. File size is: %d bytes",contentLength);
     strcpy(barBuf, local_sbuf);
@@ -441,6 +458,7 @@ void TaskUpdatePoolMaster(void)
     // set callback to print progress
     UpdateCounter=0;
     espflasher.setUpdateProgressCallback([](){
+      esp_task_wdt_reset(); 
       UpdateCounter++;
       UpdateinProgress = (float(UpdateCounter*1024)/contentLength)*100.0;
       snprintf(local_sbuf,sizeof(local_sbuf),"PoolMaster update %d%%",UpdateinProgress);
@@ -497,12 +515,20 @@ void TaskUpdateNextion(void)
   if(code == 200){
     UpdateinProgress=1;
     Local_Logs_Dispatch("File received. Update Nextion...");
+
+    if (MqttClient.connected()) {
+      Local_Logs_Dispatch("Disconnecting MQTT for Nextion stability...");
+      MqttClient.disconnect();
+      delay(200);
+    }
+
     bool result;
     // initialize ESPNexUpload
     ESPNexUpload nextion(115200);
     // set callback to print progress
     UpdateCounter=0;
     nextion.setUpdateProgressCallback([](){
+      esp_task_wdt_reset();
       UpdateCounter++;
       UpdateinProgress = (float(UpdateCounter*2048)/contentLength)*100.0;
       snprintf(local_sbuf,sizeof(local_sbuf),"Nextion update %d%%",UpdateinProgress);
