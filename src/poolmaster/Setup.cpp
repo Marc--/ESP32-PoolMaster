@@ -244,8 +244,8 @@ void setup()
   PMConfig.initParam(FILTRATIONSTOPMAX,   "FiltrStopMax",           (uint8_t)22); 
   PMConfig.initParam(DELAYPIDS,           "DelayPIDs",              (uint8_t)15); 
   PMConfig.initParam(PUBLISHPERIOD,       "PublishPeriod",          (unsigned long)PUBLISHINTERVAL);
-  PMConfig.initParam(PHPIDWINDOWSIZE,     "PhPIDWSize",             (unsigned long)60000);
-  PMConfig.initParam(ORPPIDWINDOWSIZE,    "OrpPIDWSize",            (unsigned long)30000);
+  PMConfig.initParam(PHPIDWINDOWSIZE,     "PhPIDWSize",             (unsigned long)1800000);
+  PMConfig.initParam(ORPPIDWINDOWSIZE,    "OrpPIDWSize",            (unsigned long)1800000);
   PMConfig.initParam(PH_SETPOINT,         "PhSetPoint",             (double)7.2);
   PMConfig.initParam(ORP_SETPOINT,        "OrpSetPoint",            (double)750.0);
   PMConfig.initParam(PSI_HIGHTHRESHOLD,   "PSIHigh",                (double)0.5);

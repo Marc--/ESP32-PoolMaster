@@ -1464,7 +1464,7 @@ void createHAEntities()
  {char name[] = "pH PID Window Size";
   sprintf(topic, "%s/Set2", roottopic);
   char JSEntity[] = " \
-  \"command_template\": \"{ PhPIDWSize: {{value}} }\", \
+  \"command_template\": \"{ PhPIDWSize: {{ value | float | multiply(60000) | int }} }\", \
   \"min\": \"10\", \
   \"max\": \"50\", \
   \"mode\": \"slider\", \
@@ -1512,7 +1512,7 @@ void createHAEntities()
  {char name[] = "Orp PID Window Size";
   sprintf(topic, "%s/Set2", roottopic);
   char JSEntity[] = " \
-  \"command_template\": \"{ OrpPIDWSize: {{value}} }\", \
+  \"command_template\": \"{ OrpPIDWSize: {{ value | float | multiply(60000) | int }} }\", \
   \"min\": \"10\", \
   \"max\": \"50\", \
   \"mode\": \"slider\", \
