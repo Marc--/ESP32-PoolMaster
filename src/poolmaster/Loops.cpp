@@ -310,7 +310,7 @@ void pHRegulation(void *pvParameters)
           if (now - PMData.PhPIDwStart > PMConfig.get<unsigned long>(PHPIDWINDOWSIZE))
           {
             //time to shift the Relay Window
-            PMData.PhPIDwStart += PMConfig.get<double>(PHPIDWINDOWSIZE);
+            PMData.PhPIDwStart += PMConfig.get<unsigned long>(PHPIDWINDOWSIZE);
             }
           if ((unsigned long)PMData.PhPIDOutput <= now - PMData.PhPIDwStart)
             PhPump.Stop();
@@ -324,9 +324,10 @@ void pHRegulation(void *pvParameters)
       } 
     }
 
- unsigned long PhPIDwStart, OrpPIDwStart;
-    double AirTemp;
-    double PhPIDOutput, OrpPIDOutput;
+//  Inutile ?
+//  unsigned long PhPIDwStart, OrpPIDwStart;
+//     double AirTemp;
+//     double PhPIDOutput, OrpPIDOutput;
 
     #ifdef CHRONO
     t_act = millis() - td;
@@ -385,10 +386,10 @@ void OrpRegulation(void *pvParameters)
          turn the Chl pump on/off based on pid output
         ************************************************/
         unsigned long now = millis();
-        if (now - PMData.OrpPIDwStart > PMConfig.get<double>(ORPPIDWINDOWSIZE))
+        if (now - PMData.OrpPIDwStart > PMConfig.get<unsigned long>(ORPPIDWINDOWSIZE))
         {
           //time to shift the Relay Window
-          PMData.OrpPIDwStart += PMConfig.get<double>(ORPPIDWINDOWSIZE);
+          PMData.OrpPIDwStart += PMConfig.get<unsigned long>(ORPPIDWINDOWSIZE);
         }
         if ((unsigned long)PMData.OrpPIDOutput <= now - PMData.OrpPIDwStart)
           ChlPump.Stop();
