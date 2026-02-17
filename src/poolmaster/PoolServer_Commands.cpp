@@ -150,7 +150,7 @@ void p_OrpCalib(StaticJsonDocument<250>  &_jsonsdoc) {
       _OrpCalibCoeffs1 += CalibPoints[1] - CalibPoints[0];
 
       //Set slope back to default value
-      _OrpCalibCoeffs0 = -1000.0; 
+      _OrpCalibCoeffs0 = 431.03;
 
       Debug.print(DBG_DEBUG,"Calibration completed. Coeffs are: %10.2f, %10.2f",_OrpCalibCoeffs0,_OrpCalibCoeffs1);
     }
