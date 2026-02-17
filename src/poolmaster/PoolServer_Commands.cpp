@@ -391,8 +391,9 @@ void p_RstOrpCal(StaticJsonDocument<250>  &_jsonsdoc) {
     PublishSettings();
 }
 void p_RstPSICal(StaticJsonDocument<250>  &_jsonsdoc) {
-    PMConfig.put<double>(PSICALIBCOEFFS0, (double)0.377923399);
-    PMConfig.put<double>(PSICALIBCOEFFS1, (double)-0.17634473);
+    // Calibrage pour capteur 60 PSI (4.14 Bar) : 0.5V->0Bar / 4.5V->4.14Bar
+    PMConfig.put<double>(PSICALIBCOEFFS0, (double)1.035); 
+    PMConfig.put<double>(PSICALIBCOEFFS1, (double)-0.517);
     PublishSettings();
 }
 void p_Settings(StaticJsonDocument<250>  &_jsonsdoc) {
