@@ -86,6 +86,9 @@ void p_WifiConfig(StaticJsonDocument<250>  &_jsonsdoc);
 void p_MQTTConfig(StaticJsonDocument<250>  &_jsonsdoc);
 void p_SMTPConfig(StaticJsonDocument<250>  &_jsonsdoc);
 void p_PINConfig(StaticJsonDocument<250>  &_jsonsdoc);
-
+#ifdef USE_VARIO
+void p_VarioEco(StaticJsonDocument<250>  &_jsonsdoc);
+void p_VarioBoost(StaticJsonDocument<250>  &_jsonsdoc);
+#endif
 
 #endif

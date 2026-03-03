@@ -30,6 +30,9 @@
 // Mail parameters and credentials
 //#define SMTP  // define to activate SMTP email notifications
 
+// Décommenter cette ligne si vous utilisez un variateur Vario+/iSaver
+#define USE_VARIO  
+
 // PID Directions (either DIRECT or REVERSE depending on Ph/Orp correction vs water properties)
 #define PhPID_DIRECTION REVERSE
 #define OrpPID_DIRECTION DIRECT
@@ -44,7 +47,17 @@
 #define SWG_PUMP        13
 #define FILL_PUMP       23
 
-#define ALL_PINS        "4|13|23|25|26|27|32|33" // List of all usable PINs on the ESP32 (to be sent to Nextion)
+#ifdef USE_VARIO
+  // Broches du Vario+
+  #define VARIO_HIGH      14
+  #define VARIO_MED       12
+  #define VARIO_LOW       5
+  // On retire 5, 12 et 14 de la liste dispo pour l'écran Nextion
+  #define ALL_PINS        "4|13|23|25|26|27|32|33" 
+#else
+  // Liste d'origine de PoolMaster si on n'a pas de Vario+
+  #define ALL_PINS        "4|5|12|13|14|23|25|26|27|32|33"
+#endif
 
 //Digital input pins connected to Acid and Chl tank level reed switches
 #define CHL_LEVEL       39   // If chlorine tank empty switch used (contact open if low level)

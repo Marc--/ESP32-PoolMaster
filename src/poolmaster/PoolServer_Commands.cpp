@@ -1,6 +1,12 @@
 // File to store all commands
 #include "PoolServer_Commands.h"
 
+#ifdef USE_VARIO
+// On déclare nos variables globales du Vario+
+extern bool isEcoActive;
+extern bool isBoostActive;
+#endif
+
 // Map key -> handler function
 const std::map<std::string, std::function<void(StaticJsonDocument<250> &_jsonsdoc)>> server_handlers = {
     {"Buzzer",          p_Buzzer         },
@@ -62,7 +68,11 @@ const std::map<std::string, std::function<void(StaticJsonDocument<250> &_jsonsdo
     {"WifiConfig",      p_WifiConfig     },
     {"MQTTConfig",      p_MQTTConfig     },
     {"SMTPConfig",      p_SMTPConfig     },
-    {"PINConfig",       p_PINConfig      }
+    {"PINConfig",       p_PINConfig      },
+#ifdef USE_VARIO
+    {"VarioEco",        p_VarioEco       },
+    {"VarioBoost",      p_VarioBoost     }
+#endif
 };
 
 /* All JSON commands functions definition */
@@ -623,3 +633,17 @@ void p_PINConfig(StaticJsonDocument<250>  &_jsonsdoc) {
     }
 }
 
+#ifdef USE_VARIO
+// === COMMANDES VARIO+ ===
+void p_VarioEco(StaticJsonDocument<250>  &_jsonsdoc) {
+    isEcoActive = (bool)_jsonsdoc[F("VarioEco")];
+    // Si on allume le mode Eco, on force la coupure du mode Boost pour la sécurité
+    if (isEcoActive) isBoostActive = false;
+}
+
+void p_VarioBoost(StaticJsonDocument<250>  &_jsonsdoc) {
+    isBoostActive = (bool)_jsonsdoc[F("VarioBoost")];
+    // Si on allume le mode Boost, on force la coupure du mode Eco
+    if (isBoostActive) isEcoActive = false;
+}
+#endif

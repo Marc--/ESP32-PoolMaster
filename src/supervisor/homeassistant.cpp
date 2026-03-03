@@ -8,6 +8,9 @@
 #include <WiFiManager.h>
 #include "SuperVisor.h"
 
+// On prévient le SuperVisor qu'on utilise l'option Vario+
+#define USE_VARIO
+
 //#define _LTOPIC_      128
 //#define BUFFER_SIZE 1024
 //#define LOG_BUFFER_SIZE 1024
@@ -1038,6 +1041,37 @@ void createHAEntities()
   \"optimistic\": \"false\", \
   ";
  createHAEntitie(entitytype, name, topic, JSEntity, JScommon, hatopic, commandtopic);}
+
+//For Vario+ usage
+#ifdef USE_VARIO
+ {char name[] = "Filtration 24/7";
+  sprintf(topic, "%s/Meas1", roottopic);
+  char JSEntity[] = " \
+  \"payload_on\": \"{VarioEco: 1}\", \
+  \"payload_off\": \"{VarioEco: 0}\", \
+  \"value_template\": \"{{ value_json.IO4 | int | bitwise_and(64) == 64 }}\", \
+  \"state_on\": \"True\", \
+  \"state_off\": \"False\", \
+  \"unique_id\": \"poolmaster_vario_247\", \
+  \"icon\": \"mdi:pump-off\", \
+  \"optimistic\": \"false\", \
+  ";
+ createHAEntitie(entitytype, name, topic, JSEntity, JScommon, hatopic, commandtopic);}
+
+ {char name[] = "Filtration Boost";
+  sprintf(topic, "%s/Meas1", roottopic);
+  char JSEntity[] = " \
+  \"payload_on\": \"{VarioBoost: 1}\", \
+  \"payload_off\": \"{VarioBoost: 0}\", \
+  \"value_template\": \"{{ value_json.IO4 | int | bitwise_and(128) == 128 }}\", \
+  \"state_on\": \"True\", \
+  \"state_off\": \"False\", \
+  \"unique_id\": \"poolmaster_vario_boost\", \
+  \"icon\": \"mdi:pump\", \
+  \"optimistic\": \"false\", \
+  ";
+ createHAEntitie(entitytype, name, topic, JSEntity, JScommon, hatopic, commandtopic);}
+#endif
 
  // BUTTONS
  // ***********

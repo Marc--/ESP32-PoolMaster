@@ -29,6 +29,12 @@ void SetOrpPID(bool);
 void mqttErrorPublish(const char*);
 void PublishSettings(void);
 
+#ifdef USE_VARIO
+// Ajout vario+
+bool isEcoActive = false;
+bool isBoostActive = false;
+#endif
+
 //void SetFullyLoaded(void);
 //void SetNTPReady(bool);
 void stack_mon(UBaseType_t&);
@@ -80,8 +86,57 @@ void PoolMaster(void *pvParameters)
   int n=1;
   #endif
 
+  #ifdef USE_VARIO
+  // INITIALISATION DES RELAIS VARIO+
+  pinMode(VARIO_HIGH, OUTPUT);
+  pinMode(VARIO_MED, OUTPUT);
+  pinMode(VARIO_LOW, OUTPUT);
+  int currentVarioSpeed = 0; // Mémoire de la vitesse
+  #endif
+
   for(;;)
-  {  
+  {
+    #ifdef USE_VARIO  
+    // === DEBUT DU HACK VARIO+ ===
+    int targetSpeed = 0;
+    
+    // 1. On espionne la broche "Leurre" du PoolMaster
+    bool poolMasterWantsFiltration = digitalRead(FILTRATION); 
+    
+    // NOTE POUR PLUS TARD : Ici on ajoutera la lecture des boutons "Eco" et "Boost" MQTT
+    isEcoActive = isEcoActive;
+    isBoostActive = isBoostActive;
+
+    // 2. Arbre de décision
+    if (isBoostActive) {
+      targetSpeed = 3; // Priorité Max : HIGH
+    } else if (poolMasterWantsFiltration) {
+      targetSpeed = 2; // Automatique : MED
+    } else if (isEcoActive) {
+      targetSpeed = 1; // Brassage continu : LOW
+    } else {
+      targetSpeed = 0; // Repos
+    }
+
+    // 3. Application avec Make-Before-Break
+    if (currentVarioSpeed != targetSpeed) {
+      // MAKE
+      if (targetSpeed == 1) digitalWrite(VARIO_LOW, HIGH);
+      if (targetSpeed == 2) digitalWrite(VARIO_MED, HIGH);
+      if (targetSpeed == 3) digitalWrite(VARIO_HIGH, HIGH);
+      
+      if (currentVarioSpeed != 0 && targetSpeed != 0) delay(500); // Chevauchement
+      
+      // BREAK
+      if (targetSpeed != 1) digitalWrite(VARIO_LOW, LOW);
+      if (targetSpeed != 2) digitalWrite(VARIO_MED, LOW);
+      if (targetSpeed != 3) digitalWrite(VARIO_HIGH, LOW);
+      
+      currentVarioSpeed = targetSpeed;
+    }
+    // === FIN DU HACK VARIO+ ===
+    #endif
+
     // reset watchdog
     esp_task_wdt_reset();
 

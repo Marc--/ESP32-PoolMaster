@@ -12,6 +12,12 @@
 //Size of the buffer to store outgoing JSON messages
 #define PAYLOAD_BUFFER_LENGTH 200
 
+// For Vario+ usage
+#ifdef USE_VARIO
+  extern bool isEcoActive;
+  extern bool isBoostActive;
+#endif
+
 // BitMaps with GPIO states
 static uint8_t BitMap1 = 0;
 static uint8_t BitMap2 = 0;
@@ -68,8 +74,13 @@ void EncodeBitMap()
   BitMap3 |= (PMConfig.get<bool>(ORPAUTOMODE) & 1) << 0;        // 1
 
   /*******/
+#ifdef USE_VARIO
+  BitMap4 |= (isBoostActive & 1U) << 7;                           // 128 (Bit 7 : Boost)
+  BitMap4 |= (isEcoActive & 1U) << 6;                             // 64  (Bit 6 : Eco 24/7)
+#else
   BitMap4 |= (0 & 1U) << 7;                                       // 128
   BitMap4 |= (0 & 1U) << 6;                                       // 64
+#endif
   BitMap4 |= (0 & 1U) << 5;                                       // 32
   BitMap4 |= (0 & 1U) << 4;                                       // 16
   BitMap4 |= (0 & 1U) << 3;                                       // 8
