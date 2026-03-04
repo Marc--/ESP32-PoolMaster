@@ -637,13 +637,9 @@ void p_PINConfig(StaticJsonDocument<250>  &_jsonsdoc) {
 // === COMMANDES VARIO+ ===
 void p_VarioEco(StaticJsonDocument<250>  &_jsonsdoc) {
     isEcoActive = (bool)_jsonsdoc[F("VarioEco")];
-    // Si on allume le mode Eco, on force la coupure du mode Boost pour la sécurité
-    if (isEcoActive) isBoostActive = false;
 }
 
 void p_VarioBoost(StaticJsonDocument<250>  &_jsonsdoc) {
     isBoostActive = (bool)_jsonsdoc[F("VarioBoost")];
-    // Si on allume le mode Boost, on force la coupure du mode Eco
-    if (isBoostActive) isEcoActive = false;
 }
 #endif
